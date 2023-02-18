@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
 import { register } from "./src/v1/service/userService";
+import userApis from "./src/v1/api/userApi";
 
 // Express FWによるローカルサーバーの立ち上げ
 const app: express.Express = express();
@@ -20,10 +21,8 @@ try {
 	console.log(e);
 }
 
-// ユーザー新規登録API
-app.post("/register", (req: express.Request, res: express.Response) => {
-	register(req, res);
-});
+// ユーザーのAPI呼び出し
+userApis(app);
 
 app.listen(PORT, () => {
 	console.log("ローカルサーバー起動中");
