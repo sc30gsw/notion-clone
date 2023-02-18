@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
-import { register } from "./src/v1/service/userService";
 import userApis from "./src/v1/api/userApi";
 
 // Express FWによるローカルサーバーの立ち上げ
