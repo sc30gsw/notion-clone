@@ -10,7 +10,7 @@ const url = process.env.MONGODB_URL ? process.env.MONGODB_URL : "";
 // jsonオブジェクトを扱うため
 app.use(express.json());
 
-// エンドポイント
+// エンドポイントからAPIを呼び出す
 app.use("/api/v1", require("./src/v1/routes/auth"));
 
 // DB接続
