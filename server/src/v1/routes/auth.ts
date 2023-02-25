@@ -7,6 +7,7 @@ import {
 	validUsernameExist,
 	validUsernameLength,
 } from "../handlers/validation";
+import { verifyToken } from "../middleware/tokenHandler";
 
 const router = express.Router();
 
@@ -23,8 +24,7 @@ router.post(
 	}
 );
 
-// ユーザーログインAPI
-
+// ユーザーログインAPIを呼び出し
 router.post(
 	"/login",
 	validUsernameLength,
@@ -32,6 +32,15 @@ router.post(
 	printErrors,
 	(req: express.Request, res: express.Response) => {
 		login(req, res);
+	}
+);
+
+// JWT認証APIを呼び出し
+router.post(
+	"/verify-token",
+	verifyToken,
+	(req: express.Request, res: express.Response) => {
+		return res.status(200).json({ user: req.user });
 	}
 );
 
