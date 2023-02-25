@@ -30,4 +30,51 @@ const register = async (req: express.Request, res: express.Response) => {
 	}
 };
 
-export { register };
+const login = async (req: express.Request, res: express.Response) => {
+	const { username, password } = req.body;
+
+	try {
+		const user = await User.findOne({ username: username });
+
+		// ユーザーが存在しない場合
+		if (!user) {
+			return res.status(401).json({
+				errors: {
+					param: "username",
+					message: "ユーザー名が無効です",
+				},
+			});
+		}
+
+		// パスワードが合致するか照合
+		// →新規登録時に暗号化したパスワードを復号化することで照合可能
+		const secret = process.env.TOKEN_SECRET_KEY
+			? process.env.TOKEN_SECRET_KEY
+			: "";
+		const decryptedPassword = CryptoJS.AES.decrypt(
+			user.password,
+			secret
+		).toString(CryptoJS.enc.Utf8);
+
+		// 入力したパスワードが復号化したパスワードと一致しない場合
+		if (decryptedPassword !== password) {
+			return res.status(401).json({
+				errors: {
+					param: "password",
+					message: "パスワードが無効です",
+				},
+			});
+		}
+
+		// JWTトークンの発行
+		const token = jwt.sign({ id: user._id }, secret, {
+			expiresIn: "24h",
+		});
+
+		return res.status(201).json({ user, token });
+	} catch (e) {
+		return res.status(500).json(e);
+	}
+};
+
+export { register, login };

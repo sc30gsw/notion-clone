@@ -1,4 +1,4 @@
-import { register } from "../service/userService";
+import { login, register } from "../service/userService";
 import express from "express";
 import {
 	printErrors,
@@ -20,6 +20,18 @@ router.post(
 	printErrors,
 	(req: express.Request, res: express.Response) => {
 		register(req, res);
+	}
+);
+
+// ユーザーログインAPI
+
+router.post(
+	"/login",
+	validUsernameLength,
+	validPasswordLength,
+	printErrors,
+	(req: express.Request, res: express.Response) => {
+		login(req, res);
 	}
 );
 
