@@ -1,12 +1,21 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, TextField } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import authApi from "../../api/authApi";
 
 const Register = () => {
+	const [usernameErrMsg, setUsernameErrMsg] = useState<string>("");
+	const [passwordErrMsg, setPasswordErrMsg] = useState<string>("");
+	const [confirmPasswordErrMsg, setConfirmPasswordErrMsg] =
+		useState<string>("");
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		setUsernameErrMsg("");
+		setPasswordErrMsg("");
+		setConfirmPasswordErrMsg("");
 
 		// 入力欄の文字列を取得
 		const data = new FormData(e.target as HTMLFormElement);
@@ -16,6 +25,30 @@ const Register = () => {
 			.get("confirmPassword")
 			?.toString()
 			.trim() as string;
+
+		// バリデーションチェック
+		let err = false;
+		if (!username) {
+			err = true;
+			setUsernameErrMsg("名前を入力してください");
+		}
+
+		if (!password) {
+			err = true;
+			setPasswordErrMsg("パスワードを入力してください");
+		}
+
+		if (!confirmPassword) {
+			err = true;
+			setConfirmPasswordErrMsg("確認用パスワードを入力してください");
+		}
+
+		if (password !== confirmPassword) {
+			err = true;
+			setConfirmPasswordErrMsg("パスワードと確認用パスワードが一致しません");
+		}
+
+		if (err) return;
 
 		// 新規登録APIの呼び出し
 		try {
@@ -29,13 +62,29 @@ const Register = () => {
 			localStorage.setItem("token", res.data.token);
 
 			console.log("新規登録に成功しました");
-		} catch (err) {
-			console.log(err);
+		} catch (err: any) {
+			const errors = err.data.errors;
+			console.log(errors);
+			errors.map((err: any) => {
+				switch (err.param) {
+					case "username":
+						setUsernameErrMsg(err.msg);
+						break;
+
+					case "password":
+						setPasswordErrMsg(err.msg);
+						break;
+
+					case "confirmPassword":
+						setConfirmPasswordErrMsg(err.msg);
+						break;
+				}
+			});
 		}
 	};
 	return (
 		<>
-			<Box component="form" onSubmit={handleSubmit}>
+			<Box component="form" onSubmit={handleSubmit} noValidate>
 				<TextField
 					fullWidth
 					id="username"
@@ -43,6 +92,8 @@ const Register = () => {
 					margin="normal"
 					name="username"
 					required
+					helperText={usernameErrMsg}
+					error={usernameErrMsg !== ""}
 				/>
 				<TextField
 					fullWidth
@@ -52,6 +103,8 @@ const Register = () => {
 					margin="normal"
 					name="password"
 					required
+					helperText={passwordErrMsg}
+					error={passwordErrMsg !== ""}
 				/>
 				<TextField
 					fullWidth
@@ -61,6 +114,8 @@ const Register = () => {
 					margin="normal"
 					name="confirmPassword"
 					required
+					helperText={confirmPasswordErrMsg}
+					error={confirmPasswordErrMsg !== ""}
 				/>
 				<LoadingButton
 					type="submit"
