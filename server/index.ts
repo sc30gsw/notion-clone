@@ -1,9 +1,18 @@
 import express, { Router } from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
+const cors = require("cors");
+
+const app: express.Express = express();
+
+// CORS対応
+app.use(
+	cors({
+		origin: "http://localhost:3000",
+	})
+);
 
 // Express FWによるローカルサーバーの立ち上げ
-const app: express.Express = express();
 const PORT = 4000;
 const url = process.env.MONGODB_URL ? process.env.MONGODB_URL : "";
 
@@ -11,7 +20,7 @@ const url = process.env.MONGODB_URL ? process.env.MONGODB_URL : "";
 app.use(express.json());
 
 // エンドポイントからAPIを呼び出す
-app.use("/api/v1", require("./src/v1/routes/auth"));
+app.use("/api/v1", require("./src/v1/routes"));
 
 // DB接続
 try {
