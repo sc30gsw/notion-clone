@@ -20,7 +20,7 @@ const url = process.env.MONGODB_URL ? process.env.MONGODB_URL : "";
 app.use(express.json());
 
 // エンドポイントからAPIを呼び出す
-app.use("/api/v1", require("./src/v1/routes/auth"));
+app.use("/api/v1", require("./src/v1/routes"));
 
 // DB接続
 try {
