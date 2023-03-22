@@ -9,6 +9,7 @@ const Register = () => {
 	const [passwordErrMsg, setPasswordErrMsg] = useState<string>("");
 	const [confirmPasswordErrMsg, setConfirmPasswordErrMsg] =
 		useState<string>("");
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -50,6 +51,8 @@ const Register = () => {
 
 		if (err) return;
 
+		setLoading(true);
+
 		// 新規登録APIの呼び出し
 		try {
 			const res = await authApi.register({
@@ -57,6 +60,8 @@ const Register = () => {
 				password,
 				confirmPassword,
 			});
+
+			setLoading(false);
 
 			// ローカルストレージにトークンを保存
 			localStorage.setItem("token", res.data.token);
@@ -79,6 +84,7 @@ const Register = () => {
 						setConfirmPasswordErrMsg(err.msg);
 						break;
 				}
+				setLoading(false);
 			});
 		}
 	};
@@ -94,6 +100,7 @@ const Register = () => {
 					required
 					helperText={usernameErrMsg}
 					error={usernameErrMsg !== ""}
+					disabled={loading}
 				/>
 				<TextField
 					fullWidth
@@ -105,6 +112,7 @@ const Register = () => {
 					required
 					helperText={passwordErrMsg}
 					error={passwordErrMsg !== ""}
+					disabled={loading}
 				/>
 				<TextField
 					fullWidth
@@ -116,14 +124,15 @@ const Register = () => {
 					required
 					helperText={confirmPasswordErrMsg}
 					error={confirmPasswordErrMsg !== ""}
+					disabled={loading}
 				/>
 				<LoadingButton
 					type="submit"
 					fullWidth
 					sx={{ mt: 3, mb: 2 }}
-					loading={false}
 					color="primary"
 					variant="outlined"
+					loading={loading}
 				>
 					アカウント作成
 				</LoadingButton>
