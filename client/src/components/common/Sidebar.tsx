@@ -10,8 +10,16 @@ import {
 } from "@mui/material";
 import React from "react";
 import assets from "../../assets";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+	const navigate = useNavigate();
+
+	const logout = () => {
+		localStorage.removeItem("token");
+		navigate("/login");
+	};
+
 	return (
 		<Drawer
 			container={window.document.body}
@@ -26,7 +34,7 @@ const Sidebar = () => {
 					backgroundColor: assets.colors.secondary,
 				}}
 			>
-				<ListItemButton>
+				<ListItemButton onClick={logout}>
 					<Box
 						sx={{
 							width: "100%",
@@ -36,7 +44,7 @@ const Sidebar = () => {
 						}}
 					>
 						<Typography variant="body2" fontWeight="700">
-							shin code
+							ログアウト
 						</Typography>
 						<IconButton>
 							<LogoutOutlinedIcon />
