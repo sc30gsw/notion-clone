@@ -1,10 +1,12 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import authApi from "../../api/authApi";
 
 const Register = () => {
+	const navigate = useNavigate();
+
 	const [usernameErrMsg, setUsernameErrMsg] = useState<string>("");
 	const [passwordErrMsg, setPasswordErrMsg] = useState<string>("");
 	const [confirmPasswordErrMsg, setConfirmPasswordErrMsg] =
@@ -67,6 +69,7 @@ const Register = () => {
 			localStorage.setItem("token", res.data.token);
 
 			console.log("新規登録に成功しました");
+			navigate("/");
 		} catch (err: any) {
 			const errors = err.data.errors;
 			console.log(errors);
