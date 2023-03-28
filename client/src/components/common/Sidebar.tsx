@@ -11,9 +11,12 @@ import {
 import React from "react";
 import assets from "../../assets";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const Sidebar = () => {
 	const navigate = useNavigate();
+	const user = useSelector((state: RootState) => state.user.value);
 
 	const logout = () => {
 		localStorage.removeItem("token");
@@ -44,7 +47,7 @@ const Sidebar = () => {
 						}}
 					>
 						<Typography variant="body2" fontWeight="700">
-							ログアウト
+							{user.username}
 						</Typography>
 						<IconButton>
 							<LogoutOutlinedIcon />
