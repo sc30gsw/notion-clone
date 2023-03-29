@@ -44,7 +44,7 @@ const Sidebar = () => {
 			}
 		};
 		getMemos();
-	}, []);
+	}, [dispatch]);
 
 	// 依存配列をnavigateにすることで画面遷移のたびに発火する
 	useEffect(() => {
