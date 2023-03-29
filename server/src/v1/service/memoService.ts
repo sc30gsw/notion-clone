@@ -85,4 +85,28 @@ const deleteMemo = async (req: express.Request, res: express.Response) => {
 	}
 };
 
-export { create, getAll, getOne, update, deleteMemo };
+// メモお気に入り登録API
+const favorite = async (req: express.Request, res: express.Response) => {
+	const { memoId } = req.params;
+	try {
+		const memoCount = await Memo.find({ favorite: true }).count();
+
+		const memo = await Memo.findOne({ user: req.user?.id, _id: memoId });
+		if (!memo) return res.status(404).json("メモが存在しません");
+
+		// メモ更新
+		const favoriteMemo = await Memo.findByIdAndUpdate(memoId, {
+			$set: {
+				favorite: !memo.favorite,
+				favoritePosition: memoCount > 0 ? memoCount : 0,
+				updateDate: Date.now(),
+			},
+		});
+
+		return res.status(200).json(favoriteMemo);
+	} catch (e) {
+		return res.status(500).json(e);
+	}
+};
+
+export { create, getAll, getOne, update, deleteMemo, favorite };
