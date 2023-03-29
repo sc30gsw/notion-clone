@@ -4,6 +4,9 @@ import AuthLayout from "./components/layout/AuthLayout";
 import Login from "./components/pages/Login";
 import Register from "./components/pages/Register";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import AppLayout from "./components/layout/AppLayout";
+import Home from "./components/pages/Home";
+import MemoPage from "./components/pages/Memo";
 
 const App = () => {
 	const theme = createTheme({
@@ -17,6 +20,11 @@ const App = () => {
 					<Route path="/" element={<AuthLayout />}>
 						<Route path="login" element={<Login />}></Route>
 						<Route path="register" element={<Register />}></Route>
+					</Route>
+					<Route path="/" element={<AppLayout />}>
+						<Route index element={<Home />} />
+						<Route path="memo" element={<Home />} />
+						<Route path="memo/:memoId" element={<MemoPage />} />
 					</Route>
 				</Routes>
 			</BrowserRouter>
