@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 
 const Memo = require("../models/memo");
 
+// メモ新規作成API
 const create = async (req: express.Request, res: express.Response) => {
 	try {
 		const memoCount = await Memo.find().count();
@@ -20,4 +21,14 @@ const create = async (req: express.Request, res: express.Response) => {
 	}
 };
 
-export { create };
+// メモ一覧取得API
+const getAll = async (req: express.Request, res: express.Response) => {
+	try {
+		const memos = await Memo.find({ user: req.user?.id }).sort("-position");
+		return res.status(200).json(memos);
+	} catch (e) {
+		return res.status(500).json(e);
+	}
+};
+
+export { create, getAll };
