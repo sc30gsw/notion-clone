@@ -17,6 +17,15 @@ const EmojiPicker = ({ icon }: EmojiPickerProps) => {
 
 	const showPicker = () => setIsShowPicker(!isShowPicker);
 
+	const selectEmoji = (e: any) => {
+		const emojiCode = e.unified;
+		let codesArray: number[] = [];
+		codesArray.push(parseInt("0x" + emojiCode, 16));
+		const emoji = String.fromCodePoint(...codesArray);
+		console.log(emoji);
+		setIsShowPicker(false);
+	};
+
 	return (
 		<Box>
 			<Typography
@@ -34,7 +43,7 @@ const EmojiPicker = ({ icon }: EmojiPickerProps) => {
 					zIndex: 100,
 				}}
 			>
-				<Picker />
+				<Picker onEmojiSelect={selectEmoji} />
 			</Box>
 		</Box>
 	);
