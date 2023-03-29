@@ -15,6 +15,8 @@ const memoApi = {
 	// メモ更新API
 	update: (id: string, params: UpdatedMemo) =>
 		axiosClient.put(`memo/${id}`, params),
+	// メモ削除API
+	delete: (id: string) => axiosClient.delete(`memo/${id}`),
 };
 
 export default memoApi;

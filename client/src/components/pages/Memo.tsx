@@ -2,17 +2,26 @@ import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, IconButton, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import memoApi from "../../api/memoApi";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { Memo } from "../../types/Memo";
+import { setMemo } from "../../redux/features/memoSlice";
 
-const Memo = () => {
+const MemoPage = () => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const { memoId } = useParams<{ memoId?: string }>();
 	const [title, setTitle] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
+	const memos: Memo[] = useSelector((state: RootState) => state.memo.value);
 
 	useEffect(() => {
 		const getMemo = async () => {
 			try {
+				if (!memoId) return;
 				const res = await memoApi.getOne(memoId!);
 				setTitle(res.data.title);
 				setDescription(res.data.description);
@@ -33,6 +42,7 @@ const Memo = () => {
 
 		timer = setTimeout(async () => {
 			try {
+				if (!memoId) return;
 				await memoApi.update(memoId!, { title: newTitle });
 			} catch (err) {
 				alert(err);
@@ -40,18 +50,37 @@ const Memo = () => {
 		}, timeout);
 	};
 
-	const updateDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const updateDescription = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		clearTimeout(timer);
 		const newDescription = e.target.value;
 		setDescription(newDescription);
 
 		timer = setTimeout(async () => {
 			try {
+				if (!memoId) return;
 				await memoApi.update(memoId!, { description: newDescription });
 			} catch (err) {
 				alert(err);
 			}
 		}, timeout);
+	};
+
+	const deleteMemo = async () => {
+		try {
+			if (!memoId) return;
+			const deletedMemo = await memoApi.delete(memoId!);
+
+			const newMemos = memos.filter((memo) => memo._id !== memoId!);
+
+			if (newMemos.length === 0) {
+				navigate("/");
+			} else {
+				navigate(`/memo/${newMemos[0]._id}`);
+			}
+			dispatch(setMemo(newMemos));
+		} catch (err) {
+			alert(err);
+		}
 	};
 
 	return (
@@ -66,7 +95,7 @@ const Memo = () => {
 				<IconButton>
 					<StarBorderOutlinedIcon />
 				</IconButton>
-				<IconButton color="error">
+				<IconButton color="error" onClick={deleteMemo}>
 					<DeleteOutlinedIcon />
 				</IconButton>
 			</Box>
@@ -100,4 +129,4 @@ const Memo = () => {
 	);
 };
 
-export default Memo;
+export default MemoPage;
