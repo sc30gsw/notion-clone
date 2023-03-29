@@ -89,6 +89,22 @@ const MemoPage = () => {
 		}
 	};
 
+	const onIconChange = async (newIcon: string) => {
+		let temp: Memo[] = [...memos];
+		// 詳細ページで該当のメモのindexを取得
+		const index = temp.findIndex((memo) => memo._id === memoId);
+		// アイコンのみ引数で受け取ったアイコンに更新
+		temp[index] = { ...temp[index], icon: newIcon };
+		setIcon(newIcon);
+		dispatch(setMemo(temp));
+
+		try {
+			await memoApi.update(memoId!, { icon: newIcon });
+		} catch (err) {
+			alert(err);
+		}
+	};
+
 	return (
 		<>
 			<Box
@@ -107,7 +123,7 @@ const MemoPage = () => {
 			</Box>
 			<Box sx={{ padding: "10px 50px" }}>
 				<Box>
-					<EmojiPicker icon={icon} />
+					<EmojiPicker icon={icon} onChange={onIconChange} />
 					<TextField
 						value={title}
 						placeholder="無題"
