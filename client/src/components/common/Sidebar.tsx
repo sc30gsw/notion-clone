@@ -8,20 +8,41 @@ import {
 	ListItemButton,
 	Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import assets from "../../assets";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { Link } from "react-router-dom";
+import memoApi from "../../api/memoApi";
+import { useDispatch } from "react-redux";
+import { setMemo } from "../../redux/features/memoSlice";
+import { Memo } from "../../types/Memo";
 
 const Sidebar = () => {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const user = useSelector((state: RootState) => state.user.value);
+	const memos: Memo[] = useSelector((state: RootState) => state.memo.value);
 
 	const logout = () => {
 		localStorage.removeItem("token");
 		navigate("/login");
 	};
+
+	useEffect(() => {
+		const getMemos = async () => {
+			try {
+				const res = await memoApi.getAll();
+				console.log(res);
+				dispatch(setMemo(res.data));
+				console.log(memos);
+			} catch (err) {
+				alert(err);
+			}
+		};
+		getMemos();
+	}, []);
 
 	return (
 		<Drawer
@@ -87,6 +108,18 @@ const Sidebar = () => {
 						</IconButton>
 					</Box>
 				</ListItemButton>
+				{memos.map((memo) => (
+					<ListItemButton
+						key={memo._id}
+						sx={{ pl: "20px" }}
+						component={Link}
+						to={`/memo/${memo._id}`}
+					>
+						<Typography>
+							{memo.icon} {memo.title}
+						</Typography>
+					</ListItemButton>
+				))}
 			</List>
 		</Drawer>
 	);
