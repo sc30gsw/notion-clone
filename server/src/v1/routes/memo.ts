@@ -1,5 +1,5 @@
 import express from "express";
-import { create, getAll, getOne } from "../service/memoService";
+import { create, getAll, getOne, update } from "../service/memoService";
 import { verifyToken } from "../middleware/tokenHandler";
 
 const router = express.Router();
@@ -20,6 +20,15 @@ router.get(
 	verifyToken,
 	(req: express.Request, res: express.Response) => {
 		getOne(req, res);
+	}
+);
+
+// メモ更新APIを呼び出し
+router.put(
+	"/:memoId",
+	verifyToken,
+	(req: express.Request, res: express.Response) => {
+		update(req, res);
 	}
 );
 

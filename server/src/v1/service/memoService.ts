@@ -44,4 +44,27 @@ const getOne = async (req: express.Request, res: express.Response) => {
 	}
 };
 
-export { create, getAll, getOne };
+// メモ更新API
+const update = async (req: express.Request, res: express.Response) => {
+	const { memoId } = req.params;
+	const { title, description } = req.body;
+	try {
+		if (title === "") req.body.title = "無題";
+		if (description === "")
+			req.body.description = "ここに自由に記入してください";
+
+		const memo = await Memo.findOne({ user: req.user?.id, _id: memoId });
+		if (!memo) return res.status(404).json("メモが存在しません");
+
+		// メモ更新
+		const updatedMemo = await Memo.findByIdAndUpdate(memoId, {
+			$set: req.body,
+		});
+
+		return res.status(200).json(updatedMemo);
+	} catch (e) {
+		return res.status(500).json(e);
+	}
+};
+
+export { create, getAll, getOne, update };
