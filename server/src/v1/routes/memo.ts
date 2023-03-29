@@ -1,5 +1,11 @@
 import express from "express";
-import { create, getAll, getOne, update } from "../service/memoService";
+import {
+	create,
+	deleteMemo,
+	getAll,
+	getOne,
+	update,
+} from "../service/memoService";
 import { verifyToken } from "../middleware/tokenHandler";
 
 const router = express.Router();
@@ -29,6 +35,15 @@ router.put(
 	verifyToken,
 	(req: express.Request, res: express.Response) => {
 		update(req, res);
+	}
+);
+
+// メモ削除APIを呼び出し
+router.delete(
+	"/:memoId",
+	verifyToken,
+	(req: express.Request, res: express.Response) => {
+		deleteMemo(req, res);
 	}
 );
 

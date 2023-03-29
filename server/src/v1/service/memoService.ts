@@ -67,4 +67,20 @@ const update = async (req: express.Request, res: express.Response) => {
 	}
 };
 
-export { create, getAll, getOne, update };
+// メモ削除API
+const deleteMemo = async (req: express.Request, res: express.Response) => {
+	const { memoId } = req.params;
+	try {
+		const memo = await Memo.findOne({ user: req.user?.id, _id: memoId });
+		if (!memo) return res.status(404).json("メモが存在しません");
+
+		// メモ削除
+		await Memo.deleteOne({ _id: memoId });
+
+		return res.status(200).json("メモを削除しました");
+	} catch (e) {
+		return res.status(500).json(e);
+	}
+};
+
+export { create, getAll, getOne, update, deleteMemo };
