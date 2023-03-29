@@ -58,7 +58,9 @@ const MemoPage = () => {
 		timer = setTimeout(async () => {
 			try {
 				if (!memoId) return;
-				await memoApi.update(memoId!, { description: newDescription });
+				await memoApi.update(memoId!, {
+					description: newDescription,
+				});
 			} catch (err) {
 				alert(err);
 			}

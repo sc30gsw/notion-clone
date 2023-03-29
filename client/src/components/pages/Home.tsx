@@ -7,6 +7,7 @@ import memoApi from "../../api/memoApi";
 const Home = () => {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
+	const memos: Memo[] = useSelector((state: RootState) => state.memo.value);
 	const createMemo = async () => {
 		try {
 			setLoading(true);
