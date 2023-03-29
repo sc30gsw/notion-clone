@@ -1,5 +1,9 @@
-import { Memo } from "../types/Memo";
 import axiosClient from "./axiosClient";
+
+type UpdatedMemo = {
+	title?: string;
+	description?: string;
+};
 
 const memoApi = {
 	// 新規登録API
@@ -9,7 +13,8 @@ const memoApi = {
 	// メモ詳細取得API
 	getOne: (id: string) => axiosClient.get(`memo/${id}`),
 	// メモ更新API
-	update: (id: string, params: {}) => axiosClient.put(`memo/${id}`, params),
+	update: (id: string, params: UpdatedMemo) =>
+		axiosClient.put(`memo/${id}`, params),
 };
 
 export default memoApi;
