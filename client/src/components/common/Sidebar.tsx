@@ -8,9 +8,9 @@ import {
 	ListItemButton,
 	Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import assets from "../../assets";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { Link } from "react-router-dom";
@@ -25,6 +25,10 @@ const Sidebar = () => {
 	const user = useSelector((state: RootState) => state.user.value);
 	const memos: Memo[] = useSelector((state: RootState) => state.memo.value);
 
+	const [activeIndex, setActiveIndex] = useState<number>(0);
+	// URLのIDを取得
+	const { memoId } = useParams();
+
 	const logout = () => {
 		localStorage.removeItem("token");
 		navigate("/login");
@@ -34,15 +38,19 @@ const Sidebar = () => {
 		const getMemos = async () => {
 			try {
 				const res = await memoApi.getAll();
-				console.log(res);
 				dispatch(setMemo(res.data));
-				console.log(memos);
 			} catch (err) {
 				alert(err);
 			}
 		};
 		getMemos();
 	}, []);
+
+	// 依存配列をnavigateにすることで画面遷移のたびに発火する
+	useEffect(() => {
+		const activeIndex = memos.findIndex((memo: Memo) => memo._id === memoId);
+		setActiveIndex(activeIndex);
+	}, [navigate]);
 
 	return (
 		<Drawer
@@ -108,12 +116,13 @@ const Sidebar = () => {
 						</IconButton>
 					</Box>
 				</ListItemButton>
-				{memos.map((memo) => (
+				{memos.map((memo, index) => (
 					<ListItemButton
 						key={memo._id}
 						sx={{ pl: "20px" }}
 						component={Link}
 						to={`/memo/${memo._id}`}
+						selected={index === activeIndex}
 					>
 						<Typography>
 							{memo.icon} {memo.title}
