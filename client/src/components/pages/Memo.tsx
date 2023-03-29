@@ -1,4 +1,5 @@
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import StarIcon from "@mui/icons-material/Star";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, IconButton, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ const MemoPage = () => {
 	const [title, setTitle] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
 	const [icon, setIcon] = useState<string>("");
+	const [isFavorite, setIsFavorite] = useState<boolean>(false);
 	const memos: Memo[] = useSelector((state: RootState) => state.memo.value);
 
 	useEffect(() => {
@@ -28,12 +30,13 @@ const MemoPage = () => {
 				setTitle(res.data.title);
 				setDescription(res.data.description);
 				setIcon(res.data.icon);
+				setIsFavorite(res.data.favorite);
 			} catch (err) {
 				alert(err);
 			}
 		};
 		memoId && getMemo();
-	}, [memoId]);
+	}, [memos, memoId]);
 
 	let timer: any;
 	const timeout = 500;
@@ -46,7 +49,7 @@ const MemoPage = () => {
 		timer = setTimeout(async () => {
 			try {
 				if (!memoId) return;
-				await memoApi.update(memoId!, { title: newTitle });
+				const res = await memoApi.update(memoId!, { title: newTitle });
 			} catch (err) {
 				alert(err);
 			}
@@ -61,13 +64,26 @@ const MemoPage = () => {
 		timer = setTimeout(async () => {
 			try {
 				if (!memoId) return;
-				await memoApi.update(memoId!, {
+				const res = await memoApi.update(memoId!, {
 					description: newDescription,
 				});
 			} catch (err) {
 				alert(err);
 			}
 		}, timeout);
+	};
+
+	const favoriteMemo = async () => {
+		try {
+			if (!memoId) return;
+			const res = await memoApi.favorite(memoId!);
+			const newMemos = memos.map((memo) =>
+				memo._id === memoId ? res.data : memo
+			);
+			dispatch(setMemo(newMemos));
+		} catch (err) {
+			alert(err);
+		}
 	};
 
 	const deleteMemo = async () => {
@@ -114,8 +130,8 @@ const MemoPage = () => {
 					width: "100%",
 				}}
 			>
-				<IconButton>
-					<StarBorderOutlinedIcon />
+				<IconButton onClick={favoriteMemo}>
+					{isFavorite ? <StarIcon /> : <StarBorderOutlinedIcon />}
 				</IconButton>
 				<IconButton color="error" onClick={deleteMemo}>
 					<DeleteOutlinedIcon />
