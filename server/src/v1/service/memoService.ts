@@ -31,4 +31,17 @@ const getAll = async (req: express.Request, res: express.Response) => {
 	}
 };
 
-export { create, getAll };
+// メモ詳細取得API
+const getOne = async (req: express.Request, res: express.Response) => {
+	const { memoId } = req.params;
+	try {
+		const memo = await Memo.findOne({ user: req.user?.id, _id: memoId });
+		if (!memo) return res.status(404).json("メモが存在しません");
+
+		return res.status(200).json(memo);
+	} catch (e) {
+		return res.status(500).json(e);
+	}
+};
+
+export { create, getAll, getOne };
