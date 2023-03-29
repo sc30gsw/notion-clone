@@ -24,7 +24,9 @@ const create = async (req: express.Request, res: express.Response) => {
 // メモ一覧取得API
 const getAll = async (req: express.Request, res: express.Response) => {
 	try {
-		const memos = await Memo.find({ user: req.user?.id }).sort("-position");
+		const memos = await Memo.find({ user: req.user?.id }).sort({
+			updateDate: -1,
+		});
 		return res.status(200).json(memos);
 	} catch (e) {
 		return res.status(500).json(e);
@@ -58,7 +60,7 @@ const update = async (req: express.Request, res: express.Response) => {
 
 		// メモ更新
 		const updatedMemo = await Memo.findByIdAndUpdate(memoId, {
-			$set: req.body,
+			$set: { ...req.body, updateDate: Date.now() },
 		});
 
 		return res.status(200).json(updatedMemo);
