@@ -23,6 +23,19 @@ const Memo = () => {
 		memoId && getMemo();
 	}, [memoId]);
 
+	const updateTitle = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const newTitle = e.target.value;
+		setTitle(newTitle);
+
+		try {
+			await memoApi.update(memoId!, { title: newTitle });
+		} catch (err) {
+			alert(err);
+		}
+	};
+
+	const updateDescription = (e: React.ChangeEvent<HTMLInputElement>) => {};
+
 	return (
 		<>
 			<Box
@@ -50,6 +63,7 @@ const Memo = () => {
 						".MuiOutlinedInput-notchedOutline": { border: "none" },
 						".MuiOutlinedInput-root": { fontSize: "2rem", fontWeight: "700" },
 					}}
+					onChange={updateTitle}
 				/>
 				<TextField
 					value={description}
@@ -61,6 +75,7 @@ const Memo = () => {
 						".MuiOutlinedInput-notchedOutline": { border: "none" },
 						".MuiOutlinedInput-root": { fontSize: "1rem" },
 					}}
+					onChange={updateDescription}
 				/>
 			</Box>
 		</>

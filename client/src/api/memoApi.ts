@@ -1,3 +1,4 @@
+import { Memo } from "../types/Memo";
 import axiosClient from "./axiosClient";
 
 const memoApi = {
@@ -7,6 +8,8 @@ const memoApi = {
 	getAll: () => axiosClient.get("memo"),
 	// メモ詳細取得API
 	getOne: (id: string) => axiosClient.get(`memo/${id}`),
+	// メモ更新API
+	update: (id: string, params: {}) => axiosClient.put(`memo/${id}`, params),
 };
 
 export default memoApi;
