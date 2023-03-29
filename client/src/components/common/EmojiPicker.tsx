@@ -5,9 +5,10 @@ import Picker from "@emoji-mart/react";
 
 type EmojiPickerProps = {
 	icon: string;
+	onChange: (emoji: string) => void;
 };
 
-const EmojiPicker = ({ icon }: EmojiPickerProps) => {
+const EmojiPicker = ({ icon, onChange }: EmojiPickerProps) => {
 	const [selectedEmoji, setSelectedEmoji] = useState<string>("");
 	const [isShowPicker, setIsShowPicker] = useState<boolean>(false);
 
@@ -17,13 +18,20 @@ const EmojiPicker = ({ icon }: EmojiPickerProps) => {
 
 	const showPicker = () => setIsShowPicker(!isShowPicker);
 
-	const selectEmoji = (e: any) => {
+	const selectEmoji = (e: { unified: string }) => {
+		// 絵文字のコードを取得
 		const emojiCode = e.unified;
+
 		let codesArray: number[] = [];
+		// 配列にコードを16進数で追加する
 		codesArray.push(parseInt("0x" + emojiCode, 16));
+		// 配列（文字コード）を文字列に変換
 		const emoji = String.fromCodePoint(...codesArray);
-		console.log(emoji);
+
 		setIsShowPicker(false);
+
+		// 絵文字の文字コードを関数に渡す
+		onChange(emoji);
 	};
 
 	return (
