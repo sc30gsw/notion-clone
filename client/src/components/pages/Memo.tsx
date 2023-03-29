@@ -68,8 +68,9 @@ const MemoPage = () => {
 	const deleteMemo = async () => {
 		try {
 			if (!memoId) return;
-			const deletedMemo = await memoApi.delete(memoId!);
+			await memoApi.delete(memoId!);
 
+			// メモをリロードなしで画面から削除するため、Reduxのmemosから削除したメモを除外し、新しく配列を作成
 			const newMemos = memos.filter((memo) => memo._id !== memoId!);
 
 			if (newMemos.length === 0) {
