@@ -23,18 +23,36 @@ const Memo = () => {
 		memoId && getMemo();
 	}, [memoId]);
 
+	let timer: any;
+	const timeout = 500;
+
 	const updateTitle = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		clearTimeout(timer);
 		const newTitle = e.target.value;
 		setTitle(newTitle);
 
-		try {
-			await memoApi.update(memoId!, { title: newTitle });
-		} catch (err) {
-			alert(err);
-		}
+		timer = setTimeout(async () => {
+			try {
+				await memoApi.update(memoId!, { title: newTitle });
+			} catch (err) {
+				alert(err);
+			}
+		}, timeout);
 	};
 
-	const updateDescription = (e: React.ChangeEvent<HTMLInputElement>) => {};
+	const updateDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+		clearTimeout(timer);
+		const newDescription = e.target.value;
+		setDescription(newDescription);
+
+		timer = setTimeout(async () => {
+			try {
+				await memoApi.update(memoId!, { description: newDescription });
+			} catch (err) {
+				alert(err);
+			}
+		}, timeout);
+	};
 
 	return (
 		<>
