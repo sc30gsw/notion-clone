@@ -6,6 +6,7 @@ import Register from "./components/pages/Register";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import AppLayout from "./components/layout/AppLayout";
 import Home from "./components/pages/Home";
+import Memo from "./components/pages/Memo";
 
 const App = () => {
 	const theme = createTheme({
@@ -23,6 +24,7 @@ const App = () => {
 					<Route path="/" element={<AppLayout />}>
 						<Route index element={<Home />} />
 						<Route path="memo" element={<Home />} />
+						<Route path="memo/:memoId" element={<Memo />} />
 					</Route>
 				</Routes>
 			</BrowserRouter>
