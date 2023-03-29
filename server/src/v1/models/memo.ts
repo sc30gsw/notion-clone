@@ -14,10 +14,12 @@ const memoSchema = new mongoose.Schema({
 	title: {
 		type: String,
 		default: "無題",
+		required: true,
 	},
 	description: {
 		type: String,
 		default: "ここに自由に記入してください",
+		required: true,
 	},
 	position: {
 		type: Number,

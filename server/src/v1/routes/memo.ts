@@ -5,6 +5,7 @@ import {
 	getAll,
 	getOne,
 	update,
+	favorite,
 } from "../service/memoService";
 import { verifyToken } from "../middleware/tokenHandler";
 
@@ -44,6 +45,15 @@ router.delete(
 	verifyToken,
 	(req: express.Request, res: express.Response) => {
 		deleteMemo(req, res);
+	}
+);
+
+// メモお気に入り登録APIを呼び出し
+router.put(
+	"/:memoId/fav",
+	verifyToken,
+	(req: express.Request, res: express.Response) => {
+		favorite(req, res);
 	}
 );
 

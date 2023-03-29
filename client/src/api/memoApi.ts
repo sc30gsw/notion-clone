@@ -18,6 +18,8 @@ const memoApi = {
 		axiosClient.put(`memo/${id}`, params),
 	// メモ削除API
 	delete: (id: string) => axiosClient.delete(`memo/${id}`),
+	// メモお気に入り登録API
+	favorite: (id: string) => axiosClient.put(`memo/${id}/fav`),
 };
 
 export default memoApi;

@@ -26,6 +26,7 @@ const Sidebar = () => {
 	const memos: Memo[] = useSelector((state: RootState) => state.memo.value);
 
 	const [activeIndex, setActiveIndex] = useState<number>(0);
+	const [activeFavIndex, setActiveFavIndex] = useState<number>(0);
 	// URLのIDを取得
 	const { memoId } = useParams();
 
@@ -48,8 +49,16 @@ const Sidebar = () => {
 
 	// 依存配列をnavigateにすることで画面遷移のたびに発火する
 	useEffect(() => {
-		const activeIndex = memos.findIndex((memo: Memo) => memo._id === memoId);
+		const activeIndex = memos.findIndex(
+			(memo: Memo) => !memo.favorite && memo._id === memoId
+		);
+
 		setActiveIndex(activeIndex);
+
+		const activeFavIndex = memos
+			.filter((filterMemo: Memo) => filterMemo.favorite === true)
+			.findIndex((memo: Memo) => memo._id === memoId);
+		setActiveFavIndex(activeFavIndex);
 	}, [navigate]);
 
 	const addMemo = async () => {
@@ -106,6 +115,21 @@ const Sidebar = () => {
 					>
 						<Typography variant="body2" fontWeight="700">
 							お気に入り
+							{memos
+								.filter((memo) => memo.favorite === true)
+								.map((favMemo, index) => (
+									<ListItemButton
+										key={favMemo._id}
+										sx={{ pl: "20px" }}
+										component={Link}
+										to={`/memo/${favMemo._id}`}
+										selected={index === activeFavIndex}
+									>
+										<Typography>
+											{favMemo.icon} {favMemo.title}
+										</Typography>
+									</ListItemButton>
+								))}
 						</Typography>
 					</Box>
 				</ListItemButton>
