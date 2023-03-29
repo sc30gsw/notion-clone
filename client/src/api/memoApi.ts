@@ -3,6 +3,7 @@ import axiosClient from "./axiosClient";
 type UpdatedMemo = {
 	title?: string;
 	description?: string;
+	icon?: string;
 };
 
 const memoApi = {
