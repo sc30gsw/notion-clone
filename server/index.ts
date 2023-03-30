@@ -14,7 +14,7 @@ app.use(
 
 // Express FWによるローカルサーバーの立ち上げ
 const PORT = 4000;
-const url = process.env.MONGODB_URL ;
+const url = process.env.MONGODB_URL as string;
 
 // jsonオブジェクトを扱うため
 app.use(express.json());
