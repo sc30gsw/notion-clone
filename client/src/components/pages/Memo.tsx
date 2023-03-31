@@ -22,6 +22,15 @@ const MemoPage = () => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const memos: Memo[] = useSelector((state: RootState) => state.memo.value);
 
+  const refresh = async () => {
+    try {
+      const res = await memoApi.getAll();
+      dispatch(setMemo(res.data));
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   useEffect(() => {
     const getMemo = async () => {
       try {
@@ -49,11 +58,16 @@ const MemoPage = () => {
     timer = setTimeout(async () => {
       try {
         if (!memoId) return;
-        const res = await memoApi.update(memoId!, { title: newTitle });
+        await memoApi.update(memoId!, { title: newTitle });
       } catch (err) {
         alert(err);
       }
     }, timeout);
+  };
+
+  const confirmTitle = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+    timer = setTimeout(async () => refresh(), timeout);
   };
 
   const updateDescription = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +78,7 @@ const MemoPage = () => {
     timer = setTimeout(async () => {
       try {
         if (!memoId) return;
-        const res = await memoApi.update(memoId!, {
+        await memoApi.update(memoId!, {
           description: newDescription,
         });
       } catch (err) {
@@ -81,15 +95,6 @@ const MemoPage = () => {
         memo._id === memoId ? res.data : memo
       );
       dispatch(setMemo(newMemos));
-
-      const refresh = async () => {
-        try {
-          const res = await memoApi.getAll();
-          dispatch(setMemo(res.data));
-        } catch (err) {
-          alert(err);
-        }
-      };
 
       refresh();
     } catch (err) {
@@ -162,12 +167,14 @@ const MemoPage = () => {
               ".MuiOutlinedInput-root": { fontSize: "2rem", fontWeight: "700" },
             }}
             onChange={updateTitle}
+            onKeyUp={confirmTitle}
           />
           <TextField
             value={description}
             placeholder="追加"
             variant="outlined"
             fullWidth
+            multiline
             sx={{
               ".MuiOutlinedInput-input": { padding: 0 },
               ".MuiOutlinedInput-notchedOutline": { border: "none" },
