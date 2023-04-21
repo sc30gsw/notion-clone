@@ -13,7 +13,10 @@ app.use(
 );
 
 // Express FWによるローカルサーバーの立ち上げ
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+	console.log(`Server is running on port ${PORT}`);
+});
 const url = process.env.MONGODB_URL as string;
 
 // jsonオブジェクトを扱うため

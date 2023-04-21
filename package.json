@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "nodemon server/index.ts",
-    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
+    "start": "nodemon --exec node_modules/.bin/ts-node server/index.ts",
+    "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [],
   "author": "",
