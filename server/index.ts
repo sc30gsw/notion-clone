@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
 const cors = require("cors");
+const path = require("path");
 
 const app: express.Express = express();
 
@@ -37,6 +38,12 @@ try {
 } catch (e) {
 	console.log(e);
 }
+
+app.use(express.static(path.resolve(__dirname, "./client/build")));
+
+app.get("*", function (request, response) {
+	response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+});
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
