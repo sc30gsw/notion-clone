@@ -39,10 +39,10 @@ try {
 	console.log(e);
 }
 
-app.use(express.static(path.resolve(__dirname, "./client/build")));
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 
-app.get("*", function (request, response) {
-	response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+app.get("*", (request, response) => {
+	response.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
 });
 
 app.listen(PORT, () => {
